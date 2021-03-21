@@ -8,10 +8,13 @@
 
 
 void
-calculadora_1(char *host, operandos mis_operandos, int operador)
+calculadora_1(char *host, int a, char operador, int b)
 {
 	CLIENT *clnt;
 	calc_resultado  *result_1;
+	operandos mis_operandos;
+		mis_operandos.a = a;
+		mis_operandos.b = b;
 
 	xdr_free((xdrproc_t)xdr_calc_resultado, &result_1);
 
@@ -25,22 +28,22 @@ calculadora_1(char *host, operandos mis_operandos, int operador)
 #endif	/* DEBUG */
 
 switch (operador) {
-	case 1:
+	case '+':
 		result_1 = suma_1(mis_operandos, clnt);
 		printf("%d + %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
 	break;
 
-	case 2:
+	case '-':
 		result_1 = resta_1(mis_operandos, clnt);
 		printf("%d - %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
 	break;
 
-	case 3:
+	case 'x':
 		result_1 = multiplicacion_1(mis_operandos, clnt);
 		printf("%d * %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
 	break;
 
-	case 4:
+	case '/':
 		result_1 = division_1(mis_operandos, clnt);
 		printf("%d / %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
 	break;
@@ -62,27 +65,24 @@ int
 main (int argc, char *argv[])
 {
 	char *host;
-	operandos mis_operandos;
-	int mi_operador;
+	int a, b;
+	char mi_operador;
 
 	if (argc != 5) {
-		printf ("usage: %s server_host a b operator_id\n", argv[0]);
+		printf ("usage: %s server_host a [operator] b \n", argv[0]);
+			printf ("\tSuma: +");
+			printf ("\tResta: -");
+			printf ("\tMultiplicacion: x");
+			printf ("\tDivision simple: /");
 		exit (1);
 	}
 
 	host = argv[1];
-	mis_operandos.a = atoi(argv[2]);
-	mis_operandos.b = atoi(argv[3]);
-	mi_operador = atoi(argv[4]);
+	a = atoi(argv[2]);
+	mi_operador = *argv[3];
+	b = atoi(argv[4]);
 
-				printf("asignados argumentos host:%s a:%u b:%u operador:%u\n",host,mis_operandos.a,mis_operandos.b, mi_operador);
-				int sum, rest, mult, div;
-				sum = mis_operandos.a +mis_operandos.b;
-				rest = mis_operandos.a -mis_operandos.b;
-				mult = mis_operandos.a *mis_operandos.b;
-				div = mis_operandos.a /mis_operandos.b;
-				printf("sum:%i rest:%i mult:%i div:%i\n",sum, rest, mult, div );
 
-	calculadora_1 (host, mis_operandos, mi_operador);
+	calculadora_1 (host, a, mi_operador, b);
 exit (0);
 }
