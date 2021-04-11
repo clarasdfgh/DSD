@@ -4,23 +4,203 @@
  * as a guideline for developing your own functions.
  */
 
-#include "calculadora.h"
+ #include "calculadora.h"
+
+/******************************************************************************/
+ void
+ pinta_operacion(operandos mis_operandos, char operador, calc_resultado *result)
+ {
+	 printf("%lf %c %lf = %lf\n", mis_operandos.a, operador, mis_operandos.b, result->calc_resultado_u.resultado);
+ }
+
+ void
+ pinta_operacion_vec(vec v1, char operador,vec v2, calc_resultado_vec *result)
+ {
+	 int len = v1.vec_len;
+
+	 printf("  \n  [");
+	 for(int i = 0; i < len; i++){
+	 	printf(" %lf ", v1.vec_val[i]);
+	 }
+	 printf("] \n%c [", operador);
+	 for(int i = 0; i < len; i++){
+	 	printf(" %lf ", v2.vec_val[i]);
+	 }
+	 printf("] \n= [");
+	 for(int i = 0; i < len; i++){
+	 	printf(" %lf ", result->calc_resultado_vec_u.resultado.vec_val[i]);
+	 }
+	 printf("]\n");
+ }
+
+ void
+ pinta_operacion_matr(matr m1, char operador,matr m2, calc_resultado_matr *result)
+ {
+	 int len = m1.matr_len;
+
+	 printf("\n");
+	 for(int i = 0; i < len; i++){
+		 printf("\t(");
+		 for(int j = 0; j < len; j++){
+			 printf(" %lf ", m1.matr_val[i].vec_val[j]);
+		 }
+		 printf(") \n");
+	 }
+
+	 printf("\n%c ", operador);
+
+	 for(int i = 0; i < len; i++){
+		 printf("\t(");
+		 for(int j = 0; j < len; j++){
+			 printf(" %lf ", m2.matr_val[i].vec_val[j]);
+		 }
+		 printf(") \n");
+	 }
+
+	 	 printf("\n= ", operador);
+
+	 for(int i = 0; i < len; i++){
+	 printf("\t(");
+		 for(int j = 0; j < len; j++){
+			 printf(" %lf ", result->calc_resultado_matr_u.resultado.matr_val[i].vec_val[j]);
+		 }
+		 printf(") \n");
+	 }
+ }
+
+/******************************************************************************/
+ void
+ calculadora_1(char *host, double a, char operador, double b)
+ {
+ 	CLIENT *clnt;
+ 	calc_resultado  *result_1;
+ 	operandos mis_operandos;
+ 		mis_operandos.a = a;
+ 		mis_operandos.b = b;
+
+ 	xdr_free((xdrproc_t)xdr_calc_resultado, &result_1);
 
 
-void
-calculadora_1(char *host, int a, char operador, int b)
-{
+ #ifndef	DEBUG
+ 	clnt = clnt_create (host, CALCULADORA, CALC_VERS_1, "udp");
+ 	if (clnt == NULL) {
+ 		clnt_pcreateerror (host);
+ 		exit (1);
+ 	}
+ #endif	/* DEBUG */
+
+ switch (operador) {
+ 	case '+':
+ 		result_1 = suma_1(mis_operandos, clnt);
+		pinta_operacion(mis_operandos, operador, result_1);
+ 	break;
+
+ 	case '-':
+ 		result_1 = resta_1(mis_operandos, clnt);
+ 		pinta_operacion(mis_operandos, operador, result_1);
+ 	break;
+
+ 	case 'x':
+ 		result_1 = multiplicacion_1(mis_operandos, clnt);
+ 		pinta_operacion(mis_operandos, operador, result_1);
+ 	break;
+
+ 	case '/':
+ 		result_1 = division_1(mis_operandos, clnt);
+ 		pinta_operacion(mis_operandos, operador, result_1);
+ 	break;
+
+	default:
+			printf ("Operadores disponibles:\n");
+			printf (" Suma: +\n");
+			printf (" Resta: -\n");
+			printf (" Multiplicacion: x\n");
+			printf (" Division: +\n");
+			exit(1);
+ }
+
+ if (result_1 == (calc_resultado *) NULL) {
+ 	clnt_perror (clnt, "call failed");
+ }
+
+ xdr_free((xdrproc_t)xdr_calc_resultado, result_1);
+
+ #ifndef	DEBUG
+ 	clnt_destroy (clnt);
+ #endif	 /* DEBUG */
+ }
+
+
+ void
+ calculadora_2(char *host, vec vector_A, char operador, vec vector_B)
+ {
+ 	CLIENT *clnt;
+ 	calc_resultado_vec  *result_1;
+ 	int len = vector_A.vec_len;
+
+ 	xdr_free((xdrproc_t)xdr_calc_resultado_vec, &result_1);
+
+ #ifndef	DEBUG
+ 	clnt = clnt_create (host, CALCULADORA, CALC_VERS_2, "udp");
+ 	if (clnt == NULL) {
+ 		clnt_pcreateerror (host);
+ 		exit (1);
+ 	}
+ #endif	/* DEBUG */
+
+ switch (operador) {
+ 	case '+':
+ 		result_1 = vsuma_2(vector_A, vector_B, clnt);
+		pinta_operacion_vec(vector_A, operador, vector_B, result_1);
+ 	break;
+
+ 	case '-':
+ 	result_1 = vresta_2(vector_A, vector_B, clnt);
+	pinta_operacion_vec(vector_A, operador, vector_B, result_1);
+ 	break;
+
+ 	case 'x':
+ 	result_1 = vmultiplicacion_2(vector_A, vector_B, clnt);
+	pinta_operacion_vec(vector_A, operador, vector_B, result_1);
+ 	break;
+
+ 	case '/':
+ 	result_1 = vdivision_2(vector_A, vector_B, clnt);
+	pinta_operacion_vec(vector_A, operador, vector_B, result_1);
+ 	break;
+
+	default:
+			printf ("Operadores disponibles:\n");
+			printf (" Suma: +\n");
+			printf (" Resta: -\n");
+			printf (" Multiplicacion: x\n");
+			printf (" Division: +\n");
+			exit(1);
+ }
+
+ if (result_1 == (calc_resultado_vec *) NULL) {
+ 	clnt_perror (clnt, "call failed");
+ }
+
+ xdr_free((xdrproc_t)xdr_calc_resultado, result_1);
+
+ #ifndef	DEBUG
+ 	clnt_destroy (clnt);
+ #endif	 /* DEBUG */
+ }
+
+
+ void
+ calculadora_3(char *host, matr matriz_A, char operador, matr matriz_B)
+ {
 	CLIENT *clnt;
-	calc_resultado  *result_1;
-	operandos mis_operandos;
-		mis_operandos.a = a;
-		mis_operandos.b = b;
+	calc_resultado_matr  *result_1;
+	int len = matriz_A.matr_len;
 
-	xdr_free((xdrproc_t)xdr_calc_resultado, &result_1);
-
+	xdr_free((xdrproc_t)xdr_calc_resultado_matr, &result_1);
 
 #ifndef	DEBUG
-	clnt = clnt_create (host, CALCULADORA, CALC_VERS, "udp");
+	clnt = clnt_create (host, CALCULADORA, CALC_VERS_3, "udp");
 	if (clnt == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);
@@ -28,32 +208,34 @@ calculadora_1(char *host, int a, char operador, int b)
 #endif	/* DEBUG */
 
 switch (operador) {
-	case '+':
-		result_1 = suma_1(mis_operandos, clnt);
-		printf("%d + %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
+ case '+':
+	 result_1 = msuma_3(matriz_A, matriz_B, clnt);
+	 pinta_operacion_matr(matriz_A, operador, matriz_B, result_1);
+ break;
+
+ case '-':
+	 result_1 = mresta_3(matriz_A, matriz_B, clnt);
+	 pinta_operacion_matr(matriz_A, operador, matriz_B, result_1);
 	break;
 
-	case '-':
-		result_1 = resta_1(mis_operandos, clnt);
-		printf("%d - %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
-	break;
+ case 'x':
+	 result_1 = mmultiplicacion_3(matriz_A, matriz_B, clnt);
+	 pinta_operacion_matr(matriz_A, operador, matriz_B, result_1);
+ break;
 
-	case 'x':
-		result_1 = multiplicacion_1(mis_operandos, clnt);
-		printf("%d * %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
-	break;
-
-	case '/':
-		result_1 = division_1(mis_operandos, clnt);
-		printf("%d / %d = %d\n", mis_operandos.a, mis_operandos.b, result_1->calc_resultado_u.resultado);
-	break;
+ default:
+		 printf ("Operadores disponibles:\n");
+		 printf (" Suma: +\n");
+		 printf (" Resta: -\n");
+		 printf (" Multiplicacion: x\n");
+		 exit(1);
 }
 
-if (result_1 == (calc_resultado *) NULL) {
-	clnt_perror (clnt, "call failed");
+if (result_1 == (calc_resultado_matr *) NULL) {
+ clnt_perror (clnt, "call failed");
 }
 
-xdr_free((xdrproc_t)xdr_calc_resultado, result_1);
+xdr_free((xdrproc_t)xdr_calc_resultado_matr, result_1);
 
 #ifndef	DEBUG
 	clnt_destroy (clnt);
@@ -61,28 +243,134 @@ xdr_free((xdrproc_t)xdr_calc_resultado, result_1);
 }
 
 
+/******************************************************************************/
 int
 main (int argc, char *argv[])
 {
 	char *host;
-	int a, b;
-	char mi_operador;
 
-	if (argc != 5) {
-		printf ("usage: %s server_host a [operator] b \n", argv[0]);
-			printf ("\tSuma: +");
-			printf ("\tResta: -");
-			printf ("\tMultiplicacion: x");
-			printf ("\tDivision simple: /");
+	if (argc != 3) {
+		printf ("uso: ./calculadora_cliente server_host tipo\n");
+		printf ("\tTipos de operación:  \n");
+		printf ("\t 1.Operaciones básicas\n");
+		printf ("\t 2.Operaciones con vectores \n");
+		printf ("\t 3.Operaciones con matrices \n");
 		exit (1);
 	}
 
 	host = argv[1];
-	a = atoi(argv[2]);
-	mi_operador = *argv[3];
-	b = atoi(argv[4]);
+	int tipo = atoi(argv[2]);
 
+	char operador;
+	operandos mis_operandos;
+	vec vector_A, vector_B;
+		double value;
+		int len;
+	matr matriz_A, matriz_B;
 
-	calculadora_1 (host, a, mi_operador, b);
-exit (0);
+	switch (tipo) {
+/******************************************************************************/
+		case 1:
+			printf("Introduzca su operación. FORMATO: x operador y \n");
+			scanf("%lf %c %lf", &mis_operandos.a, &operador, &mis_operandos.b );
+
+			printf("%lf %c %lf \n", mis_operandos.a, operador, mis_operandos.b);
+
+			calculadora_1 (host, mis_operandos.a, operador, mis_operandos.b);
+		break;
+
+/******************************************************************************/
+		case 2:
+			printf("Introduzca la longitud de los vectores: ");
+			scanf("%d", &len );
+			vector_A.vec_len = len;
+			vector_A.vec_val = malloc(len * sizeof(double));
+
+			for(int i = 0; i < len; i++){
+				printf("Introduzca el elemento nº %d del vector A (elementos restantes: %d):", i, len-i);
+				scanf("%lf", &value );
+				vector_A.vec_val[i] = value;
+			}
+
+			printf("\n");
+			vector_B.vec_len = len;
+			vector_B.vec_val = malloc(len * sizeof(double));
+
+			for(int j = 0; j < len; j++){
+				printf("Introduzca el elemento nº %d del vector B (elementos restantes: %d):", j, len-j);
+				scanf("%lf", &value );
+				vector_B.vec_val[j] = value;
+			}
+
+			printf("\nIntroduzca su operador: ");
+			scanf(" %c", &operador);
+
+			calculadora_2 (host, vector_A, operador, vector_B);
+			free(vector_A.vec_val);
+			free(vector_B.vec_val);
+		break;
+
+/******************************************************************************/
+		case 3:
+			printf("Introduzca el tamaño de las matrices (solo opera en matrices cuadradas): ");
+			scanf("%d", &len );
+
+      matriz_A.matr_len = len;
+      matriz_A.matr_val = malloc(len * len * sizeof(double));
+
+			for(int i = 0; i < len; i++){
+				matriz_A.matr_val[i].vec_len = len;
+				matriz_A.matr_val[i].vec_val = malloc(len * len * sizeof(double));
+			}
+
+			for(int i = 0; i < len; i++){
+				for(int j = 0; j < len; j++){
+					printf("Introduzca el elemento %d%d de la matriz A: ", i, j);
+					scanf("%lf", &value );
+					matriz_A.matr_val[i].vec_val[j] = value;
+				}
+				printf("\n");
+			}
+
+      printf("\n");
+      matriz_B.matr_len = len;
+      matriz_B.matr_val = malloc(len * len * sizeof(double));
+
+      for(int i = 0; i < len; i++){
+        matriz_B.matr_val[i].vec_len = len;
+        matriz_B.matr_val[i].vec_val = malloc(len * len * sizeof(double));
+      }
+
+      for(int i = 0; i < len; i++){
+        for(int j = 0; j < len; j++){
+          printf("Introduzca el elemento %d%d de la matriz B: ", i, j);
+          scanf("%lf", &value );
+          matriz_B.matr_val[i].vec_val[j] = value;
+        }
+        printf("\n");
+      }
+
+			printf("\nIntroduzca su operador: ");
+			scanf(" %c", &operador);
+
+			calculadora_3 (host, matriz_A, operador, matriz_B);
+
+      for(int i = 0; i < len; i++){
+    			free(matriz_A.matr_val[i].vec_val);
+    			free(matriz_B.matr_val[i].vec_val);
+      }
+
+			free(matriz_A.matr_val);
+			free(matriz_B.matr_val);
+		break;
+
+		default:
+				printf ("uso: ./calculadora_cliente server_host tipo\n");
+				printf ("\tTipos de operación:  \n");
+				printf ("\t 1.Operaciones básicas\n");
+				printf ("\t 2.Operaciones con vectores \n");
+				exit (1);
+	}
+
+	exit (0);
 }

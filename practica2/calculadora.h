@@ -14,22 +14,90 @@ extern "C" {
 #endif
 
 
+typedef struct {
+	u_int vec_len;
+	double *vec_val;
+} vec;
+
+typedef struct {
+	u_int matr_len;
+	vec *matr_val;
+} matr;
+
 struct calc_resultado {
 	int err;
 	union {
-		int resultado;
+		double resultado;
 	} calc_resultado_u;
 };
 typedef struct calc_resultado calc_resultado;
 
+struct calc_resultado_vec {
+	int err;
+	union {
+		vec resultado;
+	} calc_resultado_vec_u;
+};
+typedef struct calc_resultado_vec calc_resultado_vec;
+
+struct calc_resultado_matr {
+	int err;
+	union {
+		matr resultado;
+	} calc_resultado_matr_u;
+};
+typedef struct calc_resultado_matr calc_resultado_matr;
+
 struct operandos {
-	int a;
-	int b;
+	double a;
+	double b;
 };
 typedef struct operandos operandos;
 
+struct vsuma_2_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct vsuma_2_argument vsuma_2_argument;
+
+struct vresta_2_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct vresta_2_argument vresta_2_argument;
+
+struct vmultiplicacion_2_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct vmultiplicacion_2_argument vmultiplicacion_2_argument;
+
+struct vdivision_2_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct vdivision_2_argument vdivision_2_argument;
+
+struct msuma_3_argument {
+	matr arg1;
+	matr arg2;
+};
+typedef struct msuma_3_argument msuma_3_argument;
+
+struct mresta_3_argument {
+	matr arg1;
+	matr arg2;
+};
+typedef struct mresta_3_argument mresta_3_argument;
+
+struct mmultiplicacion_3_argument {
+	matr arg1;
+	matr arg2;
+};
+typedef struct mmultiplicacion_3_argument mmultiplicacion_3_argument;
+
 #define CALCULADORA 0x20202020
-#define CALC_VERS 1
+#define CALC_VERS_1 1
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define SUMA 1
@@ -61,16 +129,96 @@ extern  calc_resultado * division_1();
 extern  calc_resultado * division_1_svc();
 extern int calculadora_1_freeresult ();
 #endif /* K&R C */
+#define CALC_VERS_2 2
+
+#if defined(__STDC__) || defined(__cplusplus)
+#define VSUMA 1
+extern  calc_resultado_vec * vsuma_2(vec , vec , CLIENT *);
+extern  calc_resultado_vec * vsuma_2_svc(vec , vec , struct svc_req *);
+#define VRESTA 2
+extern  calc_resultado_vec * vresta_2(vec , vec , CLIENT *);
+extern  calc_resultado_vec * vresta_2_svc(vec , vec , struct svc_req *);
+#define VMULTIPLICACION 3
+extern  calc_resultado_vec * vmultiplicacion_2(vec , vec , CLIENT *);
+extern  calc_resultado_vec * vmultiplicacion_2_svc(vec , vec , struct svc_req *);
+#define VDIVISION 4
+extern  calc_resultado_vec * vdivision_2(vec , vec , CLIENT *);
+extern  calc_resultado_vec * vdivision_2_svc(vec , vec , struct svc_req *);
+extern int calculadora_2_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+
+#else /* K&R C */
+#define VSUMA 1
+extern  calc_resultado_vec * vsuma_2();
+extern  calc_resultado_vec * vsuma_2_svc();
+#define VRESTA 2
+extern  calc_resultado_vec * vresta_2();
+extern  calc_resultado_vec * vresta_2_svc();
+#define VMULTIPLICACION 3
+extern  calc_resultado_vec * vmultiplicacion_2();
+extern  calc_resultado_vec * vmultiplicacion_2_svc();
+#define VDIVISION 4
+extern  calc_resultado_vec * vdivision_2();
+extern  calc_resultado_vec * vdivision_2_svc();
+extern int calculadora_2_freeresult ();
+#endif /* K&R C */
+#define CALC_VERS_3 3
+
+#if defined(__STDC__) || defined(__cplusplus)
+#define MSUMA 1
+extern  calc_resultado_matr * msuma_3(matr , matr , CLIENT *);
+extern  calc_resultado_matr * msuma_3_svc(matr , matr , struct svc_req *);
+#define MRESTA 2
+extern  calc_resultado_matr * mresta_3(matr , matr , CLIENT *);
+extern  calc_resultado_matr * mresta_3_svc(matr , matr , struct svc_req *);
+#define MMULTIPLICACION 3
+extern  calc_resultado_matr * mmultiplicacion_3(matr , matr , CLIENT *);
+extern  calc_resultado_matr * mmultiplicacion_3_svc(matr , matr , struct svc_req *);
+extern int calculadora_3_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+
+#else /* K&R C */
+#define MSUMA 1
+extern  calc_resultado_matr * msuma_3();
+extern  calc_resultado_matr * msuma_3_svc();
+#define MRESTA 2
+extern  calc_resultado_matr * mresta_3();
+extern  calc_resultado_matr * mresta_3_svc();
+#define MMULTIPLICACION 3
+extern  calc_resultado_matr * mmultiplicacion_3();
+extern  calc_resultado_matr * mmultiplicacion_3_svc();
+extern int calculadora_3_freeresult ();
+#endif /* K&R C */
 
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
+extern  bool_t xdr_vec (XDR *, vec*);
+extern  bool_t xdr_matr (XDR *, matr*);
 extern  bool_t xdr_calc_resultado (XDR *, calc_resultado*);
+extern  bool_t xdr_calc_resultado_vec (XDR *, calc_resultado_vec*);
+extern  bool_t xdr_calc_resultado_matr (XDR *, calc_resultado_matr*);
 extern  bool_t xdr_operandos (XDR *, operandos*);
+extern  bool_t xdr_vsuma_2_argument (XDR *, vsuma_2_argument*);
+extern  bool_t xdr_vresta_2_argument (XDR *, vresta_2_argument*);
+extern  bool_t xdr_vmultiplicacion_2_argument (XDR *, vmultiplicacion_2_argument*);
+extern  bool_t xdr_vdivision_2_argument (XDR *, vdivision_2_argument*);
+extern  bool_t xdr_msuma_3_argument (XDR *, msuma_3_argument*);
+extern  bool_t xdr_mresta_3_argument (XDR *, mresta_3_argument*);
+extern  bool_t xdr_mmultiplicacion_3_argument (XDR *, mmultiplicacion_3_argument*);
 
 #else /* K&R C */
+extern bool_t xdr_vec ();
+extern bool_t xdr_matr ();
 extern bool_t xdr_calc_resultado ();
+extern bool_t xdr_calc_resultado_vec ();
+extern bool_t xdr_calc_resultado_matr ();
 extern bool_t xdr_operandos ();
+extern bool_t xdr_vsuma_2_argument ();
+extern bool_t xdr_vresta_2_argument ();
+extern bool_t xdr_vmultiplicacion_2_argument ();
+extern bool_t xdr_vdivision_2_argument ();
+extern bool_t xdr_msuma_3_argument ();
+extern bool_t xdr_mresta_3_argument ();
+extern bool_t xdr_mmultiplicacion_3_argument ();
 
 #endif /* K&R C */
 

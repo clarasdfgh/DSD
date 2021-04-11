@@ -68,3 +68,122 @@ division_1(operandos arg1,  CLIENT *clnt)
 	}
 	return (&clnt_res);
 }
+
+calc_resultado_vec *
+vsuma_2(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	vsuma_2_argument arg;
+	static calc_resultado_vec clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, VSUMA, (xdrproc_t) xdr_vsuma_2_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_vec, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_vec *
+vresta_2(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	vresta_2_argument arg;
+	static calc_resultado_vec clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, VRESTA, (xdrproc_t) xdr_vresta_2_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_vec, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_vec *
+vmultiplicacion_2(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	vmultiplicacion_2_argument arg;
+	static calc_resultado_vec clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, VMULTIPLICACION, (xdrproc_t) xdr_vmultiplicacion_2_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_vec, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_vec *
+vdivision_2(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	vdivision_2_argument arg;
+	static calc_resultado_vec clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, VDIVISION, (xdrproc_t) xdr_vdivision_2_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_vec, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_matr *
+msuma_3(matr arg1, matr arg2,  CLIENT *clnt)
+{
+	msuma_3_argument arg;
+	static calc_resultado_matr clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MSUMA, (xdrproc_t) xdr_msuma_3_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_matr, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_matr *
+mresta_3(matr arg1, matr arg2,  CLIENT *clnt)
+{
+	mresta_3_argument arg;
+	static calc_resultado_matr clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MRESTA, (xdrproc_t) xdr_mresta_3_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_matr, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+calc_resultado_matr *
+mmultiplicacion_3(matr arg1, matr arg2,  CLIENT *clnt)
+{
+	mmultiplicacion_3_argument arg;
+	static calc_resultado_matr clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MMULTIPLICACION, (xdrproc_t) xdr_mmultiplicacion_3_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_calc_resultado_matr, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
