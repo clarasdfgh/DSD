@@ -1,3 +1,6 @@
 /Recursos
 *.pdf
 *.zip
+*.o
+!*.c
+!*.h

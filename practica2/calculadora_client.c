@@ -250,7 +250,7 @@ main (int argc, char *argv[])
 	char *host;
 
 	if (argc != 3) {
-		printf ("uso: ./calculadora_cliente server_host tipo\n");
+		printf ("uso: ./calculadora_client server_host tipo\n");
 		printf ("\tTipos de operación:  \n");
 		printf ("\t 1.Operaciones básicas\n");
 		printf ("\t 2.Operaciones con vectores \n");
@@ -273,8 +273,6 @@ main (int argc, char *argv[])
 		case 1:
 			printf("Introduzca su operación. FORMATO: x operador y \n");
 			scanf("%lf %c %lf", &mis_operandos.a, &operador, &mis_operandos.b );
-
-			printf("%lf %c %lf \n", mis_operandos.a, operador, mis_operandos.b);
 
 			calculadora_1 (host, mis_operandos.a, operador, mis_operandos.b);
 		break;
@@ -365,10 +363,11 @@ main (int argc, char *argv[])
 		break;
 
 		default:
-				printf ("uso: ./calculadora_cliente server_host tipo\n");
+				printf ("uso: ./calculadora_client server_host tipo\n");
 				printf ("\tTipos de operación:  \n");
 				printf ("\t 1.Operaciones básicas\n");
 				printf ("\t 2.Operaciones con vectores \n");
+				printf ("\t 3.Operaciones con matrices \n");
 				exit (1);
 	}
 

@@ -12,7 +12,7 @@ suma_1_svc(operandos arg1,  struct svc_req *rqstp)
 	static calc_resultado  result;
 
 	xdr_free((xdrproc_t)xdr_calc_resultado, &result);
-	result.calc_resultado_u.resultado = arg1.a*1.0 + arg1.b*1.0;
+	result.calc_resultado_u.resultado = arg1.a + arg1.b;
 
 	return &result;
 }
