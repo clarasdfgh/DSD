@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Domotica</title>
+		<style>
+				html{ height: auto; margin: auto; width: auto; overflow-x: hidden; overflow-y: scroll; }
+				body{ background-color: #ebf1f2; margin-bottom: 0px; }
+
+				h1{ color:#505257; font-family: 'Open Sans'; }
+				h2{ color:#929498; font-family: 'Open Sans'; }
+				h3{ color:#aaabad; font-family: 'Open Sans'; }
+
+				div.main{
+					height: 100%; width: 100%; position: relative; z-index: 1;
+					display: grid; grid-template-columns: 33% 33% 33%; grid-gap: 10px;
+				  font-style: bold; font-size: 15px; margin-bottom: 3em;
+				}
+
+				.main article{
+					height: 100%; border-radius: 5px; background-color: white;
+					padding: 5px; box-shadow: 1px 1px 2px #cfcfcf; color: gray; font-size: .5vw;
+				}
+
+				.main article div{ position: relative; width: auto; height: 250px; overflow: hidden; }
+
+				input{
+				  width: 100%; height: 1em; padding: 12px 20px; box-sizing: border-box;
+					border: 2px solid #ccc; border-radius: 4px; background-color: #f8f8f8;
+					resize: none; margin-bottom: 10px; font-family: 'Open Sans';
+				}
+
+				input[type=submit]{
+				  width: 30%; height: 1.2em; border: none; color: white;
+				  background-color: #ffb41f; padding: 5px 5px 25px 5px;
+				  text-align: center; align: center; display: inline-block;
+				}
+
+				input[type=submit]:hover{ background-color: white; color: #ffb41f; transition-duration: 0.2s; }
+		</style>
+
+	</head>
+
+	<body>
+		<h1> Sistema de domotica </h1>
+		<div class="main">
+
+			<article>
+				<h2> Eventos: </h2>
+				<div id="resultados"></div>
+			</article>
+
+			<article>
+
+				<form action="javascript:void(0);" onclick="checkDispositivos()">
+					<h3>Aire acondicionado:</h3><input type="checkbox" value="Aire acondicionado" id="aire"/>
+					<h3>Persianas:</h3><input type="checkbox" value="Persianas" id="persiana"/>
+					<input type="submit" value="Aplicar"/>
+				</form>
+
+			</article>
+
+			<article id="estado">
+				<h2>Luminosidad actual:</h2><span id="valor_lum"></span>
+				<h2>Temperatura actual:</h2><span id="valor_tem"></span>
+			</article>
+		</div>
+
+
+		<a href="http://127.0.0.1:8080/agente"><input type="submit" value="Agente" /></a>
+
+	</body>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		var serviceURL = document.URL;
+		var socket = io.connect(serviceURL);
+
+		 function actualizarLista(usuarios){
+ 			var listContainer = document.getElementById('resultados');
+ 			listContainer.innerHTML = '';
+ 			var listElement = document.createElement('ul');
+ 			listContainer.appendChild(listElement);
+ 			var num = usuarios.length;
+ 			for(var i=0; i<num; i++) {
+ 	            var listItem = document.createElement('li');
+ 	            listItem.innerHTML = JSON.stringify(usuarios[i]);
+ 	            listElement.appendChild(listItem);
+ 	        }
+ 	    }
+
+			function checkDispositivos(){
+				var dispositivos = [];
+
+				dispositivos[0] = document.getElementById('aire');
+				dispositivos[1] = document.getElementById('persiana');
+
+				return dispositivos;
+			}
+
+		/**************************************************************************/
+		/*socket.on('dispositivos'), function(data){
+			var d = new Date();
+			actual = checkDispositivos();
+
+			socket.emit('dispositivos', {aire:actual[0], persiana:actual[1], time:d});
+		});*/
+
+
+ 		socket.on('my-address', function(data) {
+ 			var d = new Date();
+ 			socket.emit('poner', {host:data.host, port:data.port, time:d});
+ 			socket.emit('obtener', {host: data.address});
+ 		});
+
+ 		socket.on('obtener', function(data) {
+ 			actualizarLista(data);
+ 		});
+
+ 		socket.on('disconnect', function() {
+ 			actualizarLista({});
+ 		});
+ </script>
+</html>

@@ -1,0 +1,21 @@
+{
+	"scripts": {
+		"helloworld": 		"node src/helloworld.js",
+		"calculadora": 		"node src/calculadora.js",
+		"calculadoraweb": "node src/calculadora-web.js",
+		"connection": 		"node src/connections.js",
+		"mongotest": 			"node src/mongo-test.js",
+		"domotica":				"node src/server.js"
+  },
+  "name": "NodeJS",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Clara Romero",
+  "license": "GPL-3.0",
+  "private": false,
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "mongodb": "^3.6.9",
+    "socket.io": "^4.1.2"
+  }
+}
